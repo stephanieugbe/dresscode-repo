@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PAU Dress Code Checker{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .pau-blue { background-color: #003366; }
+        body { display: flex; flex-direction: column; min-height: 100vh; }
+        main { flex: 1; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg pau-blue">
+        <div class="container">
+            <a class="navbar-brand text-white" href="{% url 'dresscode_checker:home' %}">
+                <i class="fas fa-graduation-cap"></i> PAU Dress Code Checker
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link text-white" href="{% url 'dresscode_checker:home' %}">Home</a>
+                <a class="nav-link text-white" href="{% url 'dresscode_checker:check' %}">Check Outfit</a>
+                <a class="nav-link text-white" href="{% url 'dresscode_checker:guidelines' %}">Guidelines</a>
+                <a class="nav-link text-white" href="{% url 'dresscode_checker:about' %}">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="pau-blue text-white text-center py-3 mt-5">
+        <div class="container">
+            <p>&copy; 2025 Pan-Atlantic University. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

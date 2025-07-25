@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block title %}About - PAU Dress Code Checker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <h2 class="text-center mb-4">About the PAU Dress Code Compliance System</h2>
+        
+        <!-- Project Overview -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title" style="color: #003366;">
+                    <i class="fas fa-info-circle"></i> Project Overview
+                </h5>
+                <p class="lead">This AI-powered dress code compliance system was developed as a Computer Science final year project to help Pan-Atlantic University female students verify their outfit compliance before leaving their hostels.</p>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-target"></i> Project Goals</h6>
+                        <ul>
+                            <li>Reduce subjective enforcement of dress codes</li>
+                            <li>Provide real-time feedback to students</li>
+                            <li>Prevent academic disruptions due to dress code violations</li>
+                            <li>Enhance student confidence and reduce embarrassment</li>
+                            <li>Create an unbiased, consistent evaluation system</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-lightbulb"></i> Key Features</h6>
+                        <ul>
+                            <li>AI-powered image analysis using ResNet architecture</li>
+                            <li>Real-time compliance checking</li>
+                            <li>Specific violation detection and feedback</li>
+                            <li>Mobile-friendly responsive design</li>
+                            <li>Privacy-focused (images not permanently stored)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical Details -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title" style="color: #003366;">
+                    <i class="fas fa-cogs"></i> Technical Implementation
+                </h5>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card bg-light h-100">
+                            <div class="card-body text-center">
+                                <i class="fab fa-python fa-3x mb-3" style="color: #003366;"></i>
+                                <h6>Backend Technology</h6>
+                                <ul class="list-unstyled">
+                                    <li>Django 4.2.7</li>
+                                    <li>PyTorch</li>
+                                    <li>OpenCV</li>
+                                    <li>PIL/Pillow</li>
+                                    <li>SQLite Database</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card bg-light h-100">
+                            <div class="card-body text-center">
+                                <i class="fab fa-html5 fa-3x mb-3" style="color: #003366;"></i>
+                                <h6>Frontend Technology</h6>
+                                <ul class="list-unstyled">
+                                    <li>HTML5 & CSS3</li>
+                                    <li>Bootstrap 5</li>
+                                    <li>JavaScript (ES6)</li>
+                                    <li>Font Awesome Icons</li>
+                                    <li>Responsive Design</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card bg-light h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-brain fa-3x mb-3" style="color: #003366;"></i>
+                                <h6>AI/ML Technology</h6>
+                                <ul class="list-unstyled">
+                                    <li>ResNet-50 Architecture</li>
+                                    <li>Transfer Learning</li>
+                                    <li>Custom Dataset Training</li>
+                                    <li>Google Colab Training</li>
+                                    <li>Binary Classification</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Development -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title" style="color: #003366;">
+                    <i class="fas fa-code-branch"></i> Development Process
+                </h5>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-database"></i> Data Collection & Training</h6>
+                        <ul>
+                            <li><strong>Dataset Creation:</strong> Custom dataset of PAU female student outfits</li>
+                            <li><strong>Labeling:</strong> Manual annotation of compliant vs non-compliant images</li>
+                            <li><strong>Training Environment:</strong> Google Colab with GPU acceleration</li>
+                            <li><strong>Model Fine-tuning:</strong> ResNet-50 pre-trained on ImageNet</li>
+                            <li><strong>Validation:</strong> Cross-validation and performance testing</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-laptop-code"></i> Development Environment</h6>
+                        <ul>
+                            <li><strong>IDE:</strong> Visual Studio Code</li>
+                            <li><strong>Version Control:</strong> Git</li>
+                            <li><strong>Backend Framework:</strong> Django</li>
+                            <li><strong>Model Training:</strong> Google Colab</li>
+                            <li><strong>Testing:</strong> Local development server</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Impact -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title" style="color: #003366;">
+                    <i class="fas fa-chart-line"></i> Expected Impact
+                </h5>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="alert alert-success">
+                            <h6><i class="fas fa-plus-circle"></i> Benefits for Students</h6>
+                            <ul class="mb-0">
+                                <li>Reduced anxiety about dress code compliance</li>
+                                <li>Fewer missed classes due to dress code violations</li>
+                                <li>Improved academic performance through better attendance</li>
+                                <li>Enhanced confidence in personal appearance</li>
+                                <li>Real-time feedback and learning</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-university"></i> Benefits for University</h6>
+                            <ul class="mb-0">
+                                <li>Consistent and objective dress code enforcement</li>
+                                <li>Reduced burden on security personnel</li>
+                                <li>Better compliance rates through education</li>
+                                <li>Improved student-administration relations</li>
+                                <li>Data-driven insights on compliance trends</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Limitations & Future Work -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title" style="color: #003366;">
+                    <i class="fas fa-exclamation-triangle"></i> Current Limitations
+                </h5>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-minus-circle"></i> Known Limitations</h6>
+                        <ul>
+                            <li>Limited to female students only</li>
+                            <li>Image-based evaluation only (no video)</li>
+                            <li>Focuses on clothing only (excludes shoes, makeup, hairstyles)</li>
+                            <li>Dataset size constraints affecting accuracy</li>
+                            <li>Lighting and image quality dependencies</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-arrow-up"></i> Future Improvements</h6>
+                        <ul>
+                            <li>Extend to male students with separate model</li>
+                            <li>Add video analysis capabilities</li>
+                            <li>Include comprehensive appearance evaluation</li>
+                            <li>Expand dataset for better diversity and accuracy</li>
+                            <li>Implement real-time camera integration</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Academic Information -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title" style="color: #003366;">
+                    <i class="fas fa-graduation-cap"></i> Academic Project Information
+                </h5>
+                
+                <div class="row">
+                    <div class="col-md-8">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td><strong>Project Title:</strong></td>
+                                <td>A Computer Vision-Based Dress Code Compliance System for Universities: A Focus on Pan-Atlantic University</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Course:</strong></td>
+                                <td>Computer Science Final Year Project</td>
+                            </tr>
+                            <tr>
+                                <td><strong>University:</strong></td>
+                                <td>Pan-Atlantic University</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Department:</strong></td>
+                                <td>Computer and Information Sciences Department</td>
+                            </tr>
+                            <tr>
+                                <td><strong>School:</strong></td>
+                                <td>School of Science and Technology</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Academic Session:</strong></td>
+                                <td>2024/2025</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <i class="fas fa-code fa-3x mb-3" style="color: #003366;"></i>
+                                <h6>Project Type</h6>
+                                <p class="mb-1"><strong>Application Programming</strong></p>
+                                <small class="text-muted">Using AI to address real-world problems in institutional settings</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact & Feedback -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title" style="color: #003366;">
+                    <i class="fas fa-comments"></i> Feedback & Support
+                </h5>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-bug"></i> Report Issues</h6>
+                        <p>If you encounter any problems or bugs while using this system, please report them to help improve the application.</p>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-star"></i> Feedback</h6>
+                        <p>Your feedback is valuable for improving this system. Share your experience and suggestions for better functionality.</p>
+                    </div>
+                </div>
+                
+                <div class="alert alert-primary">
+                    <h6><i class="fas fa-shield-alt"></i> Privacy & Data Protection</h6>
+                    <p class="mb-0">This system is designed with privacy in mind. Uploaded images are processed for compliance checking and are not permanently stored. Only compliance results and metadata are saved for system improvement purposes.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center mt-4">
+            <a href="{% url 'dresscode_checker:check' %}" class="btn pau-blue text-white btn-lg">
+                <i class="fas fa-camera"></i> Try the System
+            </a>
+            <a href="{% url 'dresscode_checker:guidelines' %}" class="btn btn-outline-primary btn-lg ms-2">
+                <i class="fas fa-book"></i> View Guidelines
+            </a>
+            <a href="{% url 'dresscode_checker:home' %}" class="btn btn-secondary btn-lg ms-2">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.pau-blue {
+    background-color: #003366;
+}
+</style>
+{% endblock %}

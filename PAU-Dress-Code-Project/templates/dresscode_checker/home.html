@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <!-- Hero Section -->
+        <div class="text-center mb-5">
+            <h1 class="display-4" style="color: #003366;">
+                <i class="fas fa-graduation-cap"></i> PAU Dress Code Checker
+            </h1>
+            <p class="lead">AI-powered outfit compliance verification for Pan-Atlantic University female students</p>
+            <p class="text-muted">Get instant feedback on your dress code compliance before leaving your hostel</p>
+        </div>
+        
+        <!-- Stats Cards -->
+        {% if total_checks > 0 %}
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-camera fa-2x mb-2" style="color: #003366;"></i>
+                        <h5 class="card-title">{{ total_checks }}</h5>
+                        <p class="card-text text-muted">Total Checks</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-check-circle fa-2x mb-2 text-success"></i>
+                        <h5 class="card-title" id="compliantCount">-</h5>
+                        <p class="card-text text-muted">Compliant Outfits</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-percentage fa-2x mb-2" style="color: #003366;"></i>
+                        <h5 class="card-title" id="complianceRate">-</h5>
+                        <p class="card-text text-muted">Compliance Rate</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Main Action Cards -->
+        <div class="row mb-4">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center d-flex flex-column">
+                        <i class="fas fa-camera fa-4x mb-3" style="color: #003366;"></i>
+                        <h5 class="card-title">Check Your Outfit</h5>
+                        <p class="card-text flex-grow-1">Upload a photo of your outfit to get instant AI-powered feedback on dress code compliance with detailed analysis.</p>
+                        <div class="mt-auto">
+                            <a href="{% url 'dresscode_checker:check' %}" class="btn pau-blue text-white btn-lg">
+                                <i class="fas fa-upload"></i> Upload Photo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center d-flex flex-column">
+                        <i class="fas fa-book-open fa-4x mb-3" style="color: #003366;"></i>
+                        <h5 class="card-title">Dress Code Guidelines</h5>
+                        <p class="card-text flex-grow-1">Review the complete PAU dress code policy with detailed explanations, examples, and frequently asked questions.</p>
+                        <div class="mt-auto">
+                            <a href="{% url 'dresscode_checker:guidelines' %}" class="btn btn-outline-primary btn-lg">
+                                <i class="fas fa-eye"></i> View Guidelines
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works Section -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title text-center mb-4" style="color: #003366;">
+                    <i class="fas fa-cogs"></i> How It Works
+                </h5>
+                
+                <div class="row">
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="step-icon">
+                            <i class="fas fa-camera-retro fa-2x mb-2" style="color: #003366;"></i>
+                        </div>
+                        <h6>1. Take Photo</h6>
+                        <p class="text-muted small">Take a clear, full-body photo of your outfit</p>
+                    </div>
+                    
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="step-icon">
+                            <i class="fas fa-upload fa-2x mb-2" style="color: #003366;"></i>
+                        </div>
+                        <h6>2. Upload Image</h6>
+                        <p class="text-muted small">Upload your photo to our secure AI system</p>
+                    </div>
+                    
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="step-icon">
+                            <i class="fas fa-brain fa-2x mb-2" style="color: #003366;"></i>
+                        </div>
+                        <h6>3. AI Analysis</h6>
+                        <p class="text-muted small">Our ResNet model analyzes your outfit for compliance</p>
+                    </div>
+                    
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="step-icon">
+                            <i class="fas fa-check-circle fa-2x mb-2" style="color: #003366;"></i>
+                        </div>
+                        <h6>4. Get Results</h6>
+                        <p class="text-muted small">Receive instant feedback with confidence score</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Benefits Section -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card border-success h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">
+                            <i class="fas fa-thumbs-up"></i> Benefits for Students
+                        </h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> Avoid embarrassment at the university gate</li>
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> Prevent missing classes due to dress code violations</li>
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> Maintain perfect attendance records</li>
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> Build confidence in your appearance choices</li>
+                            <li class="mb-2"><i class="fas fa-check text-success"></i> Get objective, unbiased feedback</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card border-info h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-info">
+                            <i class="fas fa-university"></i> System Features
+                        </h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-robot text-info"></i> AI-powered analysis using ResNet architecture</li>
+                            <li class="mb-2"><i class="fas fa-mobile-alt text-info"></i> Mobile-friendly responsive design</li>
+                            <li class="mb-2"><i class="fas fa-clock text-info"></i> Real-time processing and feedback</li>
+                            <li class="mb-2"><i class="fas fa-shield-alt text-info"></i> Privacy-focused (images not stored)</li>
+                            <li class="mb-2"><i class="fas fa-chart-line text-info"></i> Detailed violation analysis</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity (if there are recent checks) -->
+        {% if recent_checks %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title" style="color: #003366;">
+                    <i class="fas fa-history"></i> Recent Activity
+                </h5>
+                <div class="row">
+                    {% for check in recent_checks %}
+                    <div class="col-md-6 col-lg-4 mb-2">
+                        <div class="alert alert-{% if check.compliance_result == 'compliant' %}success{% elif check.compliance_result == 'non_compliant' %}warning{% else %}danger{% endif %} mb-2">
+                            <small>
+                                <strong>
+                                    {% if check.compliance_result == 'compliant' %}
+                                        <i class="fas fa-check-circle"></i> Compliant
+                                    {% elif check.compliance_result == 'non_compliant' %}
+                                        <i class="fas fa-exclamation-triangle"></i> Non-Compliant
+                                    {% else %}
+                                        <i class="fas fa-times-circle"></i> Error
+                                    {% endif %}
+                                </strong>
+                                <br>
+                                {% if check.confidence_score %}
+                                    Confidence: {{ check.confidence_score|floatformat:0 }}%<br>
+                                {% endif %}
+                                {{ check.timestamp|timesince }} ago
+                            </small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Important Information -->
+        <div class="alert alert-primary">
+            <h6><i class="fas fa-info-circle"></i> Important Information:</h6>
+            <ul class="mb-0">
+                <li><strong>For Best Results:</strong> Take clear, well-lit photos showing your full outfit</li>
+                <li><strong>Privacy:</strong> Uploaded images are processed immediately and not permanently stored</li>
+                <li><strong>Accuracy:</strong> This AI system provides guidance but final compliance determination is made by university security</li>
+                <li><strong>Support:</strong> If you encounter issues, try refreshing the page or using a different image</li>
+            </ul>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="text-center">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 style="color: #003366;">Ready to Check Your Outfit?</h5>
+                    <p class="text-muted">Get instant AI-powered feedback on your dress code compliance</p>
+                    <a href="{% url 'dresscode_checker:check' %}" class="btn pau-blue text-white btn-lg me-2">
+                        <i class="fas fa-camera"></i> Start Checking
+                    </a>
+                    <a href="{% url 'dresscode_checker:about' %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-info-circle"></i> Learn More
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.pau-blue {
+    background-color: #003366;
+}
+
+.step-icon {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load stats if we have total checks
+    {% if total_checks > 0 %}
+    fetch('{% url "dresscode_checker:api_stats" %}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.compliant_checks !== undefined) {
+                document.getElementById('compliantCount').textContent = data.compliant_checks;
+                document.getElementById('complianceRate').textContent = data.compliance_rate + '%';
+            }
+        })
+        .catch(error => {
+            console.log('Stats loading failed:', error);
+        });
+    {% endif %}
+});
+</script>
+{% endblock %}

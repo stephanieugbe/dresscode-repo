@@ -1,0 +1,508 @@
+{% extends "base.html" %}
+
+{% block title %}Check Outfit - PAU{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <h2 class="text-center mb-4">Check Your Outfit</h2>
+        
+        <!-- Gender Selection -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title text-center mb-4">
+                    <i class="fas fa-user"></i> Select Your Gender
+                </h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <button type="button" class="btn btn-outline-primary btn-lg w-100 gender-btn" data-gender="female" id="femaleBtn">
+                            <i class="fas fa-female fa-2x d-block mb-2"></i>
+                            <strong>Female Student</strong>
+                            <br><small>Check female dress code compliance</small>
+                        </button>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <button type="button" class="btn btn-outline-primary btn-lg w-100 gender-btn" data-gender="male" id="maleBtn">
+                            <i class="fas fa-male fa-2x d-block mb-2"></i>
+                            <strong>Male Student</strong>
+                            <br><small>Check male dress code compliance</small>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Form (Initially Hidden) -->
+        <div class="card mb-4" id="uploadSection" style="display: none;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-upload"></i> Upload Your Photo
+                        <span id="genderIndicator" class="badge ms-2"></span>
+                    </h5>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="resetGenderSelection()">
+                        <i class="fas fa-arrow-left"></i> Change Gender
+                    </button>
+                </div>
+                
+                <form id="uploadForm" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" id="selectedGender" name="gender" value="">
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                        <h5>Drag & drop your photo here</h5>
+                        <p class="text-muted">or click to browse files</p>
+                        <p class="text-muted"><small>Supports JPG, PNG (max 16MB)</small></p>
+                        <input type="file" id="fileInput" name="image" accept=".png,.jpg,.jpeg" style="display: none;">
+                        <button type="button" class="btn btn-primary pau-blue" onclick="document.getElementById('fileInput').click();">
+                            <i class="fas fa-folder-open"></i> Choose File
+                        </button>
+                    </div>
+                    <div class="mt-3 text-center">
+                        <button type="submit" class="btn btn-success btn-lg" id="checkBtn" disabled>
+                            <i class="fas fa-search"></i> Check Compliance
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="text-center" style="display: none;">
+            <div class="spinner-border" style="color: #003366;" role="status">
+                <span class="visually-hidden">Processing...</span>
+            </div>
+            <p class="mt-2">Analyzing your outfit with AI...</p>
+            <small class="text-muted">This may take a few seconds</small>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultSection" style="display: none;">
+            <div class="card result-card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-clipboard-check"></i> Compliance Status</h5>
+                            <h3 id="complianceStatus" class="mb-3"></h3>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Confidence Level:</label>
+                                <div class="progress" style="height: 25px;">
+                                    <div id="confidenceBar" class="progress-bar" style="background-color: #003366;" role="progressbar"></div>
+                                </div>
+                                <small id="confidenceText" class="text-muted"></small>
+                            </div>
+                            
+                            <div id="modelInfo" class="alert alert-light">
+                                <small>
+                                    <strong>Model:</strong> <span id="modelUsed"></span><br>
+                                    <strong>Gender:</strong> <span id="genderUsed"></span>
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <!-- Violations Section -->
+                            <div id="violationsSection" style="display: none;">
+                                <h6 class="text-danger"><i class="fas fa-exclamation-triangle"></i> Areas of Concern:</h6>
+                                <ul id="violationsList" class="list-unstyled"></ul>
+                            </div>
+                            
+                            <!-- Tips Section -->
+                            <div id="tipsSection">
+                                <h6 class="text-info"><i class="fas fa-lightbulb"></i> Tips:</h6>
+                                <ul id="tipsList" class="list-unstyled"></ul>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="mt-3">
+                                <button class="btn btn-outline-primary btn-sm" onclick="resetForm()">
+                                    <i class="fas fa-redo"></i> Check Another Photo
+                                </button>
+                                <a href="{% url 'dresscode_checker:guidelines' %}" class="btn btn-outline-info btn-sm">
+                                    <i class="fas fa-book"></i> View Guidelines
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Messages -->
+        <div id="errorSection" style="display: none;">
+            <div class="alert alert-danger">
+                <h6><i class="fas fa-exclamation-triangle"></i> Error</h6>
+                <p id="errorMessage"></p>
+                <button class="btn btn-outline-danger btn-sm" onclick="resetForm()">
+                    <i class="fas fa-redo"></i> Try Again
+                </button>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="alert alert-info mt-4">
+            <h6><i class="fas fa-info-circle"></i> For Best Results:</h6>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="mb-0">
+                        <li>Take a clear, full-body photo</li>
+                        <li>Ensure good lighting</li>
+                        <li>Stand straight facing the camera</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="mb-0">
+                        <li>Make sure your full outfit is visible</li>
+                        <li>Choose the correct gender option</li>
+                        <li>Use a plain background if possible</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom CSS -->
+<style>
+.upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.upload-area:hover {
+    border-color: #003366;
+    background-color: #f8f9fa;
+}
+
+.upload-area.dragover {
+    border-color: #003366;
+    background-color: #e3f2fd;
+}
+
+.result-card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.compliance-compliant {
+    color: #28a745;
+}
+
+.compliance-non-compliant {
+    color: #dc3545;
+}
+
+.compliance-error {
+    color: #ffc107;
+}
+
+.violation-item {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    padding: 8px 12px;
+    margin-bottom: 5px;
+}
+
+.tip-item {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    padding: 8px 12px;
+    margin-bottom: 5px;
+}
+
+.gender-btn {
+    height: 120px;
+    transition: all 0.3s ease;
+}
+
+.gender-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.gender-btn.active {
+    background-color: #003366;
+    border-color: #003366;
+    color: white;
+}
+
+.pau-blue {
+    background-color: #003366;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const uploadForm = document.getElementById('uploadForm');
+    const uploadSection = document.getElementById('uploadSection');
+    const checkBtn = document.getElementById('checkBtn');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const resultSection = document.getElementById('resultSection');
+    const errorSection = document.getElementById('errorSection');
+    const genderBtns = document.querySelectorAll('.gender-btn');
+    const selectedGenderInput = document.getElementById('selectedGender');
+
+    // Gender selection handlers
+    genderBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const gender = this.dataset.gender;
+            selectGender(gender);
+        });
+    });
+
+    function selectGender(gender) {
+        // Update button states
+        genderBtns.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.gender === gender) {
+                btn.classList.add('active');
+            }
+        });
+
+        // Set hidden input
+        selectedGenderInput.value = gender;
+
+        // Update gender indicator
+        const genderIndicator = document.getElementById('genderIndicator');
+        genderIndicator.textContent = gender.charAt(0).toUpperCase() + gender.slice(1);
+        genderIndicator.className = `badge ms-2 ${gender === 'female' ? 'bg-pink' : 'bg-primary'}`;
+
+        // Show upload section
+        uploadSection.style.display = 'block';
+        uploadSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Reset gender selection
+    window.resetGenderSelection = function() {
+        genderBtns.forEach(btn => btn.classList.remove('active'));
+        selectedGenderInput.value = '';
+        uploadSection.style.display = 'none';
+        resetForm();
+    };
+
+    // File input change handler
+    fileInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+            const file = this.files[0];
+            const fileName = file.name;
+            const fileSize = (file.size / 1024 / 1024).toFixed(2); // MB
+            
+            uploadArea.innerHTML = `
+                <i class="fas fa-file-image fa-3x text-success mb-3"></i>
+                <h5>File Selected</h5>
+                <p class="text-muted">${fileName}</p>
+                <p class="text-muted"><small>Size: ${fileSize} MB</small></p>
+                <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('fileInput').click();">
+                    <i class="fas fa-exchange-alt"></i> Change File
+                </button>
+            `;
+            checkBtn.disabled = false;
+        }
+    });
+
+    // Drag and drop handlers
+    uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            fileInput.dispatchEvent(new Event('change'));
+        }
+    });
+
+    uploadArea.addEventListener('click', function(e) {
+        if (e.target.tagName !== 'BUTTON') {
+            fileInput.click();
+        }
+    });
+
+    // Form submission
+    uploadForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (!fileInput.files.length) {
+            displayError('Please select a file first.');
+            return;
+        }
+
+        if (!selectedGenderInput.value) {
+            displayError('Please select a gender first.');
+            return;
+        }
+        
+        const formData = new FormData();
+        formData.append('image', fileInput.files[0]);
+        formData.append('gender', selectedGenderInput.value);
+        
+        // Show loading
+        loadingIndicator.style.display = 'block';
+        resultSection.style.display = 'none';
+        errorSection.style.display = 'none';
+        checkBtn.disabled = true;
+        
+        // Get CSRF token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        fetch('{% url "dresscode_checker:api_check" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': csrfToken
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            loadingIndicator.style.display = 'none';
+            checkBtn.disabled = false;
+            
+            if (data.success) {
+                displayResult(data.result);
+            } else {
+                displayError(data.error || 'An unknown error occurred.');
+            }
+        })
+        .catch(error => {
+            loadingIndicator.style.display = 'none';
+            checkBtn.disabled = false;
+            displayError('Network error occurred. Please check your connection and try again.');
+        });
+    });
+
+    function displayResult(result) {
+        // Status
+        const statusElement = document.getElementById('complianceStatus');
+        const isCompliant = result.compliance === 'compliant';
+        const isError = result.compliance === 'error';
+        
+        if (isError) {
+            statusElement.textContent = 'Processing Error';
+            statusElement.className = 'compliance-error';
+        } else {
+            statusElement.textContent = isCompliant ? 'Compliant ✓' : 'Non-Compliant ✗';
+            statusElement.className = isCompliant ? 'compliance-compliant' : 'compliance-non-compliant';
+        }
+
+        // Confidence
+        const confidenceBar = document.getElementById('confidenceBar');
+        const confidenceText = document.getElementById('confidenceText');
+        confidenceBar.style.width = result.confidence + '%';
+        confidenceBar.setAttribute('aria-valuenow', result.confidence);
+        confidenceText.textContent = `${result.confidence}% confidence`;
+
+        // Model info
+        document.getElementById('modelUsed').textContent = result.model_used || 'Unknown';
+        document.getElementById('genderUsed').textContent = result.gender || selectedGenderInput.value;
+
+        // Violations
+        const violationsSection = document.getElementById('violationsSection');
+        const violationsList = document.getElementById('violationsList');
+        
+        if (result.violations && result.violations.length > 0) {
+            violationsSection.style.display = 'block';
+            violationsList.innerHTML = result.violations.map(violation => 
+                `<li class="violation-item"><i class="fas fa-exclamation-circle text-danger"></i> ${violation}</li>`
+            ).join('');
+        } else {
+            violationsSection.style.display = 'none';
+        }
+
+        // Tips
+        const tipsList = document.getElementById('tipsList');
+        let tips = [];
+        
+        if (isCompliant) {
+            tips = [
+                'Great! Your outfit meets PAU dress code requirements.',
+                'You can proceed to campus with confidence.',
+                'Keep up the professional appearance!'
+            ];
+        } else if (isError) {
+            tips = [
+                'There was an issue processing your image.',
+                'Please try again with a clearer photo.',
+                'Make sure the image shows your full outfit.'
+            ];
+        } else {
+            tips = [
+                'Review the PAU dress code guidelines.',
+                'Consider making adjustments before leaving your hostel.',
+                'When in doubt, choose more conservative options.',
+                'You can always check again after making changes.'
+            ];
+        }
+        
+        tipsList.innerHTML = tips.map(tip => 
+            `<li class="tip-item"><i class="fas fa-lightbulb text-info"></i> ${tip}</li>`
+        ).join('');
+
+        resultSection.style.display = 'block';
+        
+        // Scroll to result
+        resultSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function displayError(message) {
+        document.getElementById('errorMessage').textContent = message;
+        errorSection.style.display = 'block';
+        errorSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Global function for reset button
+    window.resetForm = function() {
+        uploadForm.reset();
+        uploadArea.innerHTML = `
+            <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+            <h5>Drag & drop your photo here</h5>
+            <p class="text-muted">or click to browse files</p>
+            <p class="text-muted"><small>Supports JPG, PNG (max 16MB)</small></p>
+            <input type="file" id="fileInput" name="image" accept=".png,.jpg,.jpeg" style="display: none;">
+            <button type="button" class="btn btn-primary pau-blue" onclick="document.getElementById('fileInput').click();">
+                <i class="fas fa-folder-open"></i> Choose File
+            </button>
+        `;
+        
+        // Re-attach event listeners to new elements
+        const newFileInput = document.getElementById('fileInput');
+        newFileInput.addEventListener('change', fileInput.onchange);
+        
+        checkBtn.disabled = true;
+        loadingIndicator.style.display = 'none';
+        resultSection.style.display = 'none';
+        errorSection.style.display = 'none';
+        
+        // Scroll back to upload area
+        uploadSection.scrollIntoView({ behavior: 'smooth' });
+    };
+});
+</script>
+
+<style>
+.bg-pink {
+    background-color: #e91e63 !important;
+}
+</style>
+{% endblock %}

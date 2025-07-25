@@ -19,7 +19,7 @@ import numpy as np
 from .models import ComplianceCheck
 
 def get_client_ip(request):
-    """Get client IP address"""
+    
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
         ip = x_forwarded_for.split(',')[0]
@@ -28,9 +28,7 @@ def get_client_ip(request):
     return ip
 
 def load_pytorch_model(gender='female'):
-    """
-    Load trained PyTorch ResNet model for specified gender
-    """
+    
     try:
         model_filename = f'pau_dresscode_resnet_{gender}.pth'
         model_path = os.path.join(settings.BASE_DIR, 'models', model_filename)
@@ -42,18 +40,16 @@ def load_pytorch_model(gender='female'):
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         
         if gender == 'male':
-            # Male model: ResNet18 with simpler classifier
             class DressCodeClassifier(nn.Module):
                 def __init__(self):
                     super().__init__()
                     self.backbone = models.resnet18(pretrained=False)
-                    # Simpler classifier to match your saved model
                     self.backbone.fc = nn.Sequential(
-                        nn.Dropout(0.5),           # fc.0
-                        nn.Linear(512, 128),       # fc.1 - matches your saved shape!
-                        nn.ReLU(),                 # fc.2
-                        nn.Dropout(0.3),           # fc.3
-                        nn.Linear(128, 2)          # fc.4 - matches your saved shape!
+                        nn.Dropout(0.5),           
+                        nn.Linear(512, 128),       
+                        nn.ReLU(),                 
+                        nn.Dropout(0.3),           
+                        nn.Linear(128, 2)          
                     )
                 
                 def forward(self, x):
@@ -63,8 +59,7 @@ def load_pytorch_model(gender='female'):
             state_dict = torch.load(model_path, map_location=device)
             model.load_state_dict(state_dict)
             
-        else:  # female
-            # Female model: ResNet50 checkpoint format (unchanged)
+        else:  
             model = models.resnet50(pretrained=False)
             num_features = model.fc.in_features
             model.fc = nn.Sequential(
@@ -95,7 +90,6 @@ def load_pytorch_model(gender='female'):
         
 
 def preprocess_image_pytorch(image_path):
-    """Preprocess image for PyTorch ResNet model"""
     try:
         transform = transforms.Compose([
             transforms.Resize((224, 224)),
@@ -104,7 +98,7 @@ def preprocess_image_pytorch(image_path):
         ])
         
         image = Image.open(image_path).convert('RGB')
-        image_tensor = transform(image).unsqueeze(0)  # Add batch dimension
+        image_tensor = transform(image).unsqueeze(0)  
         
         return image_tensor
         
@@ -112,18 +106,13 @@ def preprocess_image_pytorch(image_path):
         raise Exception(f"Error preprocessing image: {str(e)}")
 
 def analyze_violations(image_path, compliance_result, gender='female'):
-    """
-    Analyze specific violations in the image based on gender
-    Currently returns empty list - can be enhanced with specific detection later
-    """
+    
     violations = []
     
     return violations
 
 def predict_compliance(image_path, gender='female'):
-    """
-    Predict dress code compliance using PyTorch model for specified gender
-    """
+    
     model = load_pytorch_model(gender)
     
     if model is None:
@@ -176,8 +165,7 @@ def predict_compliance(image_path, gender='female'):
 
 # Main Views
 def home(request):
-    """Home page"""
-    # Get some basic stats for the home page
+    
     total_checks = ComplianceCheck.objects.count()
     recent_checks = ComplianceCheck.objects.order_by('-timestamp')[:5]
     
@@ -188,22 +176,20 @@ def home(request):
     return render(request, 'dresscode_checker/home.html', context)
 
 def check_outfit(request):
-    """Outfit checking page"""
+    
     return render(request, 'dresscode_checker/check.html')
 
 def guidelines(request):
-    """PAU dress code guidelines"""
+    
     return render(request, 'dresscode_checker/guidelines.html')
 
 def about(request):
-    """About the project"""
+    
     return render(request, 'dresscode_checker/about.html')
 
-# API Views
 @csrf_exempt
 @require_http_methods(["POST"])
 def api_check_compliance(request):
-    """API endpoint for compliance checking"""
     try:
         if 'image' not in request.FILES:
             return JsonResponse({'error': 'No image uploaded'}, status=400)
@@ -214,24 +200,20 @@ def api_check_compliance(request):
         uploaded_file = request.FILES['image']
         gender = request.POST.get('gender')
         
-        # Validate gender
         if gender not in ['male', 'female']:
             return JsonResponse({'error': 'Invalid gender specified. Must be male or female.'}, status=400)
         
-        # Validate file type
         allowed_types = ['image/jpeg', 'image/jpg', 'image/png']
         if uploaded_file.content_type not in allowed_types:
             return JsonResponse({
                 'error': 'Invalid file type. Please upload JPG or PNG images only.'
             }, status=400)
         
-        # Validate file size (16MB limit)
         if uploaded_file.size > 16 * 1024 * 1024:
             return JsonResponse({
                 'error': 'File too large. Please upload images smaller than 16MB.'
             }, status=400)
         
-        # Save uploaded file temporarily for processing
         with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as temp_file:
             for chunk in uploaded_file.chunks():
                 temp_file.write(chunk)
@@ -248,7 +230,6 @@ def api_check_compliance(request):
                 ip_address=get_client_ip(request)
             )
             
-            # Return successful response
             return JsonResponse({
                 'success': True,
                 'result': {
@@ -263,7 +244,6 @@ def api_check_compliance(request):
             })
             
         finally:
-            # Clean up temporary file
             if os.path.exists(temp_file_path):
                 os.unlink(temp_file_path)
     
@@ -273,20 +253,17 @@ def api_check_compliance(request):
         }, status=500)
 
 def api_stats(request):
-    """API endpoint for system statistics"""
     try:
         total_checks = ComplianceCheck.objects.count()
         compliant_checks = ComplianceCheck.objects.filter(compliance_result='compliant').count()
         non_compliant_checks = ComplianceCheck.objects.filter(compliance_result='non_compliant').count()
         error_checks = ComplianceCheck.objects.filter(compliance_result='error').count()
         
-        # Gender-specific stats
         female_checks = ComplianceCheck.objects.filter(gender='female').count()
         male_checks = ComplianceCheck.objects.filter(gender='male').count()
         
         compliance_rate = (compliant_checks / total_checks * 100) if total_checks > 0 else 0
         
-        # Recent activity (last 24 hours)
         from django.utils import timezone
         from datetime import timedelta
         
@@ -311,7 +288,6 @@ def api_stats(request):
         }, status=500)
 
 def api_recent_checks(request):
-    """API endpoint for recent checks"""
     try:
         recent_checks = ComplianceCheck.objects.order_by('-timestamp')[:10]
         
